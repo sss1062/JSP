@@ -20,24 +20,49 @@
 	  <result property="imageFileName" column="imageFileName" />
  </resultMap>
 
-  <select id="selectAllArticlesList" resultMap="articlesResult"   >
+  <select id="selectAllArticles" resultType="ArticleVO" parameterType="java.util.Map"   >
     <![CDATA[
-      SELECT level, articleNO, parentNO, title, content, writeDate, imageFileName, id
-      from t_board
-      START WITH  parentNO=0
-      CONNECT BY PRIOR articleNO=parentNO 
-      ORDER SIBLINGS BY articleNO DESC		
-    ]]>
+      select * from (
+        select rownum as recNum,
+        LVL,
+        articleNO,
+        parentNO,
+        title,
+        content,
+        imageFileName,
+        writeDate,
+        id,
+        notice,
+        readCount
+        from (
+            SELECT LEVEL as LVL,
+              articleNO,
+               parentNO,
+              LPAD(' ',4*(LEVEL-1)) || title title,
+              content,
+              imageFileName,
+              writeDate,
+              id,
+              notice,
+              readCount
+              FROM t_board  
+              START WITH parentNO=0  
+              CONNECT BY PRIOR articleNO=parentNO
+              ORDER SIBLINGS BY notice DESC, articleNO DESC
+              ))
+where
+recNum between(#{section}-1)*100+(#{pageNum}-1)*10+1 and (#{section}-1)*100+#{pageNum}*10
+    ]]>		<!-- 공지사항글 먼저 오름차순 정렬, 페이징 쿼리 -->
   </select>
   
 	<!--단일이미지 추가  -->
 	 
-  <insert id="insertNewArticle"  parameterType="java.util.Map">
+ <!--  <insert id="insertNewArticle"  parameterType="java.util.Map">
 		<![CDATA[
-			INSERT into t_board(articleNO,  title, content, imageFileName, id)
-			VALUES(#{articleNO},#{title},	#{content}, #{imageFileName},	#{id})
+			INSERT into t_board(articleNO,  title, content, imageFileName, id, notice)
+			VALUES(#{articleNO},#{title},	#{content}, null,	#{id}, #{notice})
 		]]>      
-	</insert>
+	</insert> -->
 	
   <select id="selectNewArticleNO" resultType="int"  >
 		<![CDATA[
@@ -56,10 +81,20 @@
 			update t_board
 			set title=#{title},	 
 			content=#{content}
-			 <if test="imageFileName!='' and imageFileName!=null">
-			  , imageFileName=#{imageFileName}
-			</if>
 			where articleNO=#{articleNO}
+	</update>
+	<!-- 다중이미지 업데이트 -->
+	<update id = "updateImageList" parameterType="java.util.Map">
+		update t_imageFile
+		set imagefilename = #{imageFileName, jdbcType=VARCHAR}
+		<choose>
+			<when test = "imageFileName != null">
+				where imageFileNO = #{imageFileNO}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		and articleNO = #{articleNO}
 	</update>
 	
 	<delete id="deleteArticle"  parameterType="int">
@@ -73,11 +108,11 @@
   </delete>
 
  <!--다중 이미지 추가 SQL문 -->   
-  <!--
-    <insert id="insertNewArticle"  parameterType="java.util.Map">
+  
+     <insert id="insertNewArticle"  parameterType="java.util.Map">
     <![CDATA[
-      insert into t_board(articleNO, id, title, content, imageFileName)
-      values(#{articleNO}, #{id}, #{title}, #{content}, null)
+      insert into t_board(articleNO, id, title, content, imageFileName, notice)
+      values(#{articleNO}, #{id}, #{title}, #{content}, null, #{notice})
     ]]>      
   </insert>
 
@@ -86,10 +121,10 @@
     <foreach item="item"  collection="list"   open="INSERT ALL" 
                   separator=" " close="SELECT * FROM DUAL" >
       INTO t_imageFile(imageFileNO, imageFileName, articleNO, regDate)
-      VALUES (#{item.imageFileNO}, #{item.imageFileName}, #{item.articleNO}, sysdate)
+      VALUES (#{item.imageFileNO}, #{item.imageFileName, jdbcType=VARCHAR}, #{item.articleNO}, sysdate)
     </foreach>
   </insert>
- -->
+
  
   <select id="selectNewImageFileNO" resultType="int"  >
     <![CDATA[
@@ -104,5 +139,21 @@
       where articleNO=#{articleNO}	
     ]]>
   </select> 
-  
+  <!-- 조회수 올리는 쿼리문 -->
+  <update id="readCountUp" parameterType="int">
+    	UPDATE t_board SET
+    	readCount = readCount+1
+    	WHERE articleNO = #{articleNO}
+    </update>
+    <select id="total" resultType="int">
+    select count(*) from t_board
+    </select>
+    
+    <!-- 테스트게시글 -->
+   <!--  <insert id="testInsert" parameterType="int" >
+		<![CDATA[
+			insert into t_board(articleNO, parentNO, title, content, imageFileName, writeDate, id, notice,readCount)
+ 			values(#{i}, 0, '공지사함!', '공지 사항', null , sysdate, 'shin', 1, 0 )
+		]]>      
+	</insert> -->
 </mapper>

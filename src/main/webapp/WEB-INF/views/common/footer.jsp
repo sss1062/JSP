@@ -15,8 +15,8 @@
   </style>
 </head>
 <body>
-<p> e-mail:ㄴshin@test.com</p> 
-<p> 회사주소:세종특별자치시 안동네길</p>
+<p> e-mail:shin@test.com</p> 
+<p> 회사주소:세종특별자치시 안동네길30</p>
 <p>찾아오는 길:<a href="#">약도</a></p>
 
 </body>

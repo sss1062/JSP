@@ -42,7 +42,8 @@
     <table border="0" align="center">
       <tr>
 					<td align="right"> 작성자</td>
-					<td colspan=2  align="left"><input type="text" size="20" maxlength="100"  value="${member.name }" readonly/> </td>
+					<td align="left"><input type="text" size="20" maxlength="100"  value="${member.name }" readonly/> </td>
+					<td ><input type="checkbox" name="notice" value = "1"><span>공지글</span> </td>
 			</tr>
 	     <tr>
 			   <td align="right">글제목: </td>

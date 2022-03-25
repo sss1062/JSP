@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component("articleVO")
 public class ArticleVO {
 	private int  level;
+	private int lvl;
 	private int articleNO;
 	private int parentNO;
 	private String title;
@@ -17,7 +18,10 @@ public class ArticleVO {
 	private String imageFileName;
 	private String id;
 	private Date  writeDate;
-	
+	private String notice;
+	private int readCount;
+	private int total;
+	private int groupNo;
 	
 	public ArticleVO() {
 		System.out.println("ArticleVO »ý¼ºÀÚ");
@@ -63,6 +67,40 @@ public class ArticleVO {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
+
+
+	public String getNotice() {
+		return notice;
+	}
+
+	public void setNotice(String notice) {
+		this.notice = notice;
+	}
+
+	public int getReadCount() {
+		return readCount;
+	}
+
+	public void setReadCount(int readCount) {
+		this.readCount = readCount;
+	}
+	
+	public int getLvl() {
+		return lvl;
+	}
+
+	public void setLvl(int lvl) {
+		this.lvl = lvl;
+	}
+
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
 
 	public String getImageFileName() {
 		try {
@@ -101,6 +139,14 @@ public class ArticleVO {
 
 	public void setWriteDate(Date writeDate) {
 		this.writeDate = writeDate;
+	}
+
+	public int getGroupNo() {
+		return groupNo;
+	}
+
+	public void setGroupNo(int groupNo) {
+		this.groupNo = groupNo;
 	}
 
 

@@ -9,6 +9,7 @@ public class ImageVO {
 	private String imageFileName;
 	private Date regDate;
 	private int articleNO;
+	private String originalFileName;
 	
 	public int getImageFileNO() {
 		return imageFileNO;
@@ -40,6 +41,12 @@ public class ImageVO {
 	}
 	public void setArticleNO(int articleNO) {
 		this.articleNO = articleNO;
+	}
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
 	}
 	
 	

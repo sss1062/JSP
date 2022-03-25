@@ -64,7 +64,7 @@ public class LoggingAdvice {
 	
 	}
 
-	/*
+	
 	// target 메소드의 동작 시간을 측정합니다.
 	@Around("execution(* com.myspring.pro30.*.service.*.*(..)) or "
 	        + "execution(* com.myspring.pro30.*.dao.*.*(..))")
@@ -81,7 +81,7 @@ public class LoggingAdvice {
 
 		// Around를 사용할 경우 반드시 Object를 리턴해야 합니다.
 		return result;
-	}*/
+	}
 
 }
 

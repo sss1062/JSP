@@ -3,12 +3,13 @@
     isELIgnored="false" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
-<%-- 
+<!-- // -->
 <c:set var="article"  value="${articleMap.article}"  />
 <c:set var="imageFileList"  value="${articleMap.imageFileList}"  />
 
- --%>
+ 
 <%
   request.setCharacterEncoding("UTF-8");
 %> 
@@ -33,9 +34,13 @@
      }
  
 	 function fn_enable(obj){
+		 var listsize = ${fn:length(imageFileList)}; //jstl list의 사이즈
+		 console.log(listsize);
 		 document.getElementById("i_title").disabled=false;
 		 document.getElementById("i_content").disabled=false;
-		 document.getElementById("i_imageFileName").disabled=false;
+		 for(var i = 0; i < listsize; i++){
+			 document.getElementById("i_imageFileName"+i).disabled=false;
+		 }
 		 document.getElementById("tr_btn_modify").style.display="block";
 		 document.getElementById("tr_file_upload").style.display="block";
 		 document.getElementById("tr_btn").style.display="none";
@@ -122,28 +127,31 @@
     <textarea rows="20" cols="60"  name="content"  id="i_content"  disabled />${article.content }</textarea>
    </td>  
   </tr>
- <%-- 
+<!--  -->
  <c:if test="${not empty imageFileList && imageFileList!='null' }">
 	  <c:forEach var="item" items="${imageFileList}" varStatus="status" >
+	  	
 		    <tr>
 			    <td width="150" align="center" bgcolor="#FF9933"  rowspan="2">
 			      이미지${status.count }
 			   </td>
 			   <td>
-			     <input  type= "hidden"   name="originalFileName" value="${item.imageFileName }" />
+			     <input  type= "hidden"   name="originalFileName${status.index}" value="${item.imageFileName }" />
+			     <input  type= "hidden"   name="imageFileNO${status.index}" value="${item.imageFileNO }" />
 			    <img src="${contextPath}/download.do?articleNO=${article.articleNO}&imageFileName=${item.imageFileName}" id="preview"  /><br>
 			   </td>   
 			  </tr>  
 			  <tr>
 			    <td>
-			       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
+			       <input  type="file"  name="imageFileName${status.index}" id="i_imageFileName${status.index}"   disabled   onchange="readURL(this);"   />
 			    </td>
 			 </tr>
+			 
 		</c:forEach>
  </c:if>
- 	 --%>    
+ 	     
  	 
-  <c:choose> 
+ <%--  <c:choose> 
 	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null' }">
 	   	<tr>
 		    <td width="150" align="center" bgcolor="#FF9933"  rowspan="2">
@@ -178,7 +186,7 @@
 				    </td>
 			  </tr>
 		 </c:otherwise>
-	 </c:choose>
+	 </c:choose> --%>
   <tr>
 	   <td width="150" align="center" bgcolor="#FF9933">
 	      등록일자
